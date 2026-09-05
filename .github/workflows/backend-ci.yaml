@@ -1,0 +1,36 @@
+name: Backend Continuous Integration
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "backend/**"
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - run: pip install -r backend/requirements.txt
+      - run: pylint backend
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: 3.9
+      - run: pip install -r backend/requirements.txt
+      - run: pytest backend
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker build -t mp-backend:latest ./backend
