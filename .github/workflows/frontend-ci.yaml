@@ -1,0 +1,36 @@
+name: Frontend Continuous Integration
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "frontend/**"
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: CI=true npm test
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker build --build-arg REACT_APP_MOVIE_API_URL=http://localhost:5000 -t mp-frontend:latest ./frontend
