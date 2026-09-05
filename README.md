@@ -410,3 +410,7 @@ kustomize build | kubectl apply -f -
 ## License
 
 [License](LICENSE.md)
+=======
+# movie-picture-pipeline
+CI/CD pipeline for Movie Picture frontend + backend.
+>>>>>>> 3f1ebc497656ac1dbe888bd783509f36909086aa
