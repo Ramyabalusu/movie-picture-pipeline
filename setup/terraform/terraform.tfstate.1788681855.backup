@@ -1,7 +1,7 @@
 {
   "version": 4,
   "terraform_version": "1.3.9",
-  "serial": 528,
+  "serial": 523,
   "lineage": "45a090d9-ce06-19f9-ae61-bcc202143668",
   "outputs": {
     "backend_ecr": {
@@ -18,6 +18,10 @@
     },
     "frontend_ecr": {
       "value": "643243923457.dkr.ecr.us-east-1.amazonaws.com/frontend",
+      "type": "string"
+    },
+    "github_action_user_arn": {
+      "value": "arn:aws:iam::643243923457:user/github-action-user",
       "type": "string"
     }
   },
@@ -57,6 +61,47 @@
                   }
                 ],
                 "resources": [],
+                "sid": ""
+              }
+            ],
+            "version": "2012-10-17"
+          },
+          "sensitive_attributes": []
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_iam_policy_document",
+      "name": "github_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "1626969440",
+            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\n        \"eks:*\",\n        \"ecr:*\",\n        \"ec2:*\"\n      ],\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "override_json": null,
+            "override_policy_documents": null,
+            "policy_id": null,
+            "source_json": null,
+            "source_policy_documents": null,
+            "statement": [
+              {
+                "actions": [
+                  "ec2:*",
+                  "ecr:*",
+                  "eks:*"
+                ],
+                "condition": [],
+                "effect": "Allow",
+                "not_actions": [],
+                "not_principals": [],
+                "not_resources": [],
+                "principals": [],
+                "resources": [
+                  "*"
+                ],
                 "sid": ""
               }
             ],
@@ -351,7 +396,7 @@
           "schema_version": 0,
           "attributes": {
             "ami_type": "AL2023_x86_64_STANDARD",
-            "arn": "arn:aws:eks:us-east-1:643243923457:nodegroup/cluster/udacity/00d03ae3-dbdb-cea0-f4fb-917784fdc356",
+            "arn": "arn:aws:eks:us-east-1:643243923457:nodegroup/cluster/udacity/84d03898-ac1c-5b3e-7d10-c2da3515053d",
             "capacity_type": "ON_DEMAND",
             "cluster_name": "cluster",
             "disk_size": 20,
@@ -360,7 +405,7 @@
             "instance_types": [
               "t3.small"
             ],
-            "labels": null,
+            "labels": {},
             "launch_template": [],
             "node_group_name": "udacity",
             "node_group_name_prefix": "",
@@ -371,7 +416,7 @@
               {
                 "autoscaling_groups": [
                   {
-                    "name": "eks-udacity-00d03ae3-dbdb-cea0-f4fb-917784fdc356"
+                    "name": "eks-udacity-84d03898-ac1c-5b3e-7d10-c2da3515053d"
                   }
                 ],
                 "remote_access_security_group_id": ""
@@ -388,7 +433,7 @@
             "subnet_ids": [
               "subnet-03f6034a4ae012ac4"
             ],
-            "tags": null,
+            "tags": {},
             "tags_all": {},
             "taint": [],
             "timeouts": null,
@@ -404,12 +449,17 @@
           "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozNjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6MzYwMDAwMDAwMDAwMH19",
           "dependencies": [
             "aws_eks_cluster.main",
+            "aws_iam_role.eks_cluster",
             "aws_iam_role.node_group",
             "aws_iam_role_policy_attachment.cni_policy",
             "aws_iam_role_policy_attachment.ecr_policy",
+            "aws_iam_role_policy_attachment.eks_cluster",
+            "aws_iam_role_policy_attachment.eks_service",
             "aws_iam_role_policy_attachment.node_group_policy",
             "aws_subnet.private_subnet",
             "aws_subnet.public_subnet",
+            "aws_vpc.vpc",
+            "data.aws_iam_policy_document.assume_role_policy",
             "data.aws_ssm_parameter.eks_ami_release_version"
           ]
         }
@@ -646,6 +696,30 @@
             "aws_iam_role.node_group",
             "data.aws_iam_policy_document.assume_role_policy"
           ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_user",
+      "name": "github_action_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::643243923457:user/github-action-user",
+            "force_destroy": false,
+            "id": "github-action-user",
+            "name": "github-action-user",
+            "path": "/",
+            "permissions_boundary": null,
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AIDAZLRCTLAAZE6XRELEB"
+          },
+          "sensitive_attributes": [],
+          "private": "bnVsbA=="
         }
       ]
     },
