@@ -1,36 +1,52 @@
+# .github/workflows/backend-ci.yaml
+
 name: Backend Continuous Integration
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
     paths:
-      - "backend/**"
+      - 'starter/backend/**'
   workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: starter/backend
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: 3.9
-      - run: pip install -r backend/requirements.txt
-      - run: pylint backend
+          python-version: '3.10'
+          cache: 'pipenv'
+          cache-dependency-path: starter/backend/Pipfile.lock
+      - run: pip install pipenv
+      - run: pipenv install --dev
+      - run: pipenv run lint
 
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: 3.9
-      - run: pip install -r backend/requirements.txt
-      - run: pytest backend
+          python-version: '3.10'
+          cache: 'pipenv'
+          cache-dependency-path: starter/backend/Pipfile.lock
+      - run: pip install pipenv
+      - run: pipenv install --dev
+      - run: pipenv run test
 
   build:
+    name: Build
     runs-on: ubuntu-latest
     needs: [lint, test]
     steps:
-      - uses: actions/checkout@v3
-      - run: docker build -t mp-backend:latest ./backend
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t backend:ci .
