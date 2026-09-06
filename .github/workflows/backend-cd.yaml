@@ -1,4 +1,6 @@
 # .github/workflows/backend-cd.yaml
+permissions:
+  contents: read
 
 name: Backend Continuous Deployment
 
