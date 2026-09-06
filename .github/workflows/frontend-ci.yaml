@@ -52,5 +52,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: starter/frontend/package-lock.json
       - run: npm ci
+      - name: Build React app
+        run: npm run build
+        env:
+          REACT_APP_MOVIE_API_URL: http://localhost:5000
       - name: Build Docker image
         run: docker build --build-arg REACT_APP_MOVIE_API_URL=http://localhost:5000 -t frontend:ci .
